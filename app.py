@@ -182,7 +182,7 @@ def get_file_content_as_string(path):
 
 
 icon = Image.open("/Users/sonamehdizade/Desktop/App/static/logo.png")
-st.set_page_config(page_title='Spell Checking Application', layout='wide',  page_icon=icon)
+st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
 
 ban = Image.open("static/nlp.jpg")
 lg= Image.open("static/spaze-logo.png")
