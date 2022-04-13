@@ -1,0 +1,264 @@
+import streamlit as st
+from streamlit_option_menu import option_menu
+from flask import Flask, url_for,render_template, request, jsonify
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import string
+from string import digits
+import re
+from sklearn.utils import shuffle
+import tensorflow
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.layers import LSTM, Input, Dense,Embedding, Concatenate, TimeDistributed
+from tensorflow.keras.models import Model,load_model, model_from_json
+from tensorflow.keras.utils import plot_model
+from tensorflow.keras.preprocessing.text import one_hot, Tokenizer
+from tensorflow.keras.callbacks import EarlyStopping
+import pickle as pkl
+import numpy as np
+import os, urllib, cv2
+
+from PIL import Image
+
+
+from model.attention import AttentionLayer
+json_file = open("/Users/sonamehdizade/Desktop/App/model/spelling_model_l.json", 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+model_loaded = model_from_json(loaded_model_json, custom_objects={'AttentionLayer': AttentionLayer})
+# load weights into new model
+model_loaded.load_weights("/Users/sonamehdizade/Desktop/App/model/spell_model_weight_l.h5")
+
+Eindex2word, Mindex2word = pkl.load( open( "/Users/sonamehdizade/Desktop/App/model/spell_word_index_l.pk", "rb" ) )
+
+inputTokenizer, outputTokenizer = pkl.load( open( "/Users/sonamehdizade/Desktop/App/model/spell_tokenizers_l.pk", "rb" ) )
+Mword2index = outputTokenizer.word_index
+Eword2index = inputTokenizer.word_index
+
+latent_dim=500
+# encoder inference
+encoder_inputs = model_loaded.input[0]  #loading encoder_inputs
+encoder_outputs, state_h, state_c = model_loaded.layers[6].output #loading encoder_outputs
+#print(encoder_outputs.shape)
+encoder_model = Model(inputs=encoder_inputs,outputs=[encoder_outputs, state_h, state_c])
+
+# decoder inference
+# Below tensors will hold the states of the previous time step
+#decoder_inputs_t = model_loaded.input[1]  # input_2
+#decoder_inputs = tensorflow.identity(decoder_inputs_t)
+
+decoder_state_input_h = Input(shape=(latent_dim,))
+decoder_state_input_c = Input(shape=(latent_dim,))
+decoder_hidden_state_input = Input(shape=(57,latent_dim))
+# Get the embeddings of the decoder sequence
+#decoder_inputs = model_loaded.layers[3].output
+decoder_inputs = model_loaded.layers[3].output  # input_2
+
+for layer in model_loaded.layers:
+    layer._name = layer._name + str("_2")
+
+
+#print(decoder_inputs.shape)
+dec_emb_layer = model_loaded.layers[5]
+dec_emb2= dec_emb_layer(decoder_inputs)
+# To predict the next word in the sequence, set the initial states to the states from the previous time step
+decoder_lstm = model_loaded.layers[7]
+decoder_outputs2, state_h2, state_c2 = decoder_lstm(dec_emb2, initial_state=[decoder_state_input_h, decoder_state_input_c])
+#attention inference
+attn_layer = model_loaded.layers[8]
+attn_out_inf, attn_states_inf = attn_layer([decoder_hidden_state_input, decoder_outputs2])
+concate = model_loaded.layers[9]
+decoder_inf_concat = Concatenate(axis=-1, name='concat')([decoder_outputs2, attn_out_inf])
+# A dense softmax layer to generate prob dist. over the target vocabulary
+decoder_dense = model_loaded.layers[10]
+decoder_outputs2 = decoder_dense(decoder_inf_concat)
+# Final decoder model
+decoder_states_inputs = [decoder_hidden_state_input, decoder_state_input_h, decoder_state_input_c]
+decoder_states=[state_h2, state_c2]
+
+
+decoder_model = Model([decoder_inputs] + [decoder_hidden_state_input,decoder_state_input_h, decoder_state_input_c],[decoder_outputs2] + [state_h2, state_c2])
+
+
+def decode_sequence(input_seq):
+    # Encode the input as state vectors.
+    e_out, e_h, e_c = encoder_model.predict(input_seq)
+
+    # Generate empty target sequence of length 1.
+    target_seq = np.zeros((1,1))
+
+    # Chose the 'start' word as the first word of the target sequence
+    target_seq[0, 0] = Mword2index['<']
+
+    stop_condition = False
+    decoded_sentence = ''
+    while not stop_condition:
+        output_tokens, h, c = decoder_model.predict([target_seq] + [e_out, e_h, e_c])
+
+        # Sample a token
+        sampled_token_index = np.argmax(output_tokens[0, -1, :])
+        if sampled_token_index == 0:
+          break
+        else:
+          sampled_token = Mindex2word[sampled_token_index]
+
+          if(sampled_token!='>'):
+              decoded_sentence += ''+sampled_token
+
+              # Exit condition: either hit max length or find stop word.
+              if (sampled_token == '>' or len(decoded_sentence.split()) >= (26-1)):
+                  stop_condition = True
+
+          # Update the target sequence (of length 1).
+          target_seq = np.zeros((1,1))
+          target_seq[0, 0] = sampled_token_index
+
+          # Update internal states
+          e_h, e_c = h, c
+
+    return decoded_sentence
+
+def seq2summary(input_seq):
+    newString=''
+    for i in input_seq:
+      if((i!=0 and i!=Mword2index['<']) and i!=Mword2index['>']):
+        newString=newString+Mindex2word[i]+''
+    return newString
+
+def seq2text(input_seq):
+    newString=''
+    for i in input_seq:
+      if(i!=0):
+        newString=newString+Eindex2word[i]+''
+    return newString
+
+# function for preprocessing sentences
+def preprocess_sentence(w):
+  #w = unicode_to_ascii(w.lower().strip())
+  w=str(w)
+  w = w.lower().strip()
+  w = re.sub(r"([?.!,¿])", r" \1 ", w)
+  w = re.sub(r'[" "]+', " ", w)
+  # replacing everything with space except (a-z, A-Z, ".", "?", "!", ",")
+  w = re.sub(r"[^a-zA-Z?.!,¿]+yüukenqşhzxjfıvaproldcgəçsmitğböYÜUKENQŞHZXJFIVAPROLDCGƏÇSMİTĞBÖ", " ", w)
+
+  w = w.strip()
+
+  # adding a start and an end token to the sentence
+  # so that the model know when to start and stop predicting.
+  #w = '<start> ' + w + ' <end>'
+  w = '< ' + w + ' >'
+  return w
+
+def spell_check(w):
+  w= preprocess_sentence(w)
+  X_test_word = inputTokenizer.texts_to_sequences([w])
+  X_test_word = pad_sequences(X_test_word, maxlen=57, padding='post')
+  w= decode_sequence(X_test_word[0].reshape(1,57))
+  w=w.replace(" .","").replace("<","").replace(">","").strip()
+  return w
+
+
+
+
+# Download a single file and make its content available as a string.
+@st.cache(show_spinner=False)
+def get_file_content_as_string(path):
+    """
+    Method to read markdown file
+
+    Inputs:
+        path : path to markdown file
+
+    Returns:
+        Returns the markdown file as string
+    """
+
+    file = open(path, mode='rb')
+    # response = urllib.request.urlopen(url)
+    return file.read().decode("utf-8")
+
+
+
+
+icon = Image.open("/Users/sonamehdizade/Desktop/App/static/logo.png")
+st.set_page_config(page_title='Spell Checking Application', layout='wide',  page_icon=icon)
+
+ban = Image.open("static/nlp.jpg")
+lg= Image.open("static/spaze-logo.png")
+
+
+
+
+footer="""<style>
+
+#MainMenu{visibility:hidden;}
+footer{visibility:hidden;}
+
+a:link , a:visited{
+color: blue;
+background-color: transparent;
+text-decoration: underline;
+}
+
+a:hover,  a:active {
+color: red;
+background-color: transparent;
+text-decoration: underline;
+}
+
+.footer {
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+background-color: white;
+color: black;
+text-align: center;
+}
+</style>
+ <div class="footer">
+                    <p class="footer-text m-0">
+                      © 2022 | Developed by 
+                      <a href="https://github.com/sonamehdi19" target="_blank"
+                        >sonamehdi19</a
+                      >
+                    </p>
+  </div>
+"""
+st.markdown(footer,unsafe_allow_html=True)
+
+
+
+
+selected=option_menu(menu_title=None, 
+    options=["Ana səhifə", "Aplikasiya", "Haqqında"], 
+    icons=["house", "spellcheck", "info-circle"], 
+    menu_icon="cast", 
+    default_index=0,
+    orientation="horizontal"
+)
+
+if selected== "Ana səhifə":
+  st.image(Image.open('static/main.png'),use_column_width=True)
+  st.header("Niyə SpAze?")
+  st.markdown(get_file_content_as_string("ho.md"), unsafe_allow_html=True)
+
+elif selected=="Haqqında":
+  st.image(Image.open('static/main.png'),use_column_width=True)
+  st.markdown(get_file_content_as_string("ins.md"), unsafe_allow_html=True)
+
+
+else:
+  st.markdown('<h1 style="text-align: center;">SpAze - Azərbaycanca Orfoqrafiya Yoxlanış Platformu</h1>', unsafe_allow_html=True)
+  col1, col2=st.columns(2);
+  text = col1.text_area(label ='İlkin mətn:',placeholder="Mətni buraya daxil edin...", value='', height=185, max_chars=None, key=None)
+  
+  if st.button('Yoxla'):
+      if text == '':
+          st.warning('Zəhmət olmasa mətni daxil edin.') 
+      else: 
+          result=spell_check(text)
+          col2.text_area(label ='Düzəldilmiş mətn:',value=result, height=185, max_chars=None, key=None)
+  else:pass
+

@@ -1,0 +1,5 @@
+
+Orfoqrafik səhvlərin əksəriyyəti sosial mediada, söhbət proqramlarında və e-poçtlarda ötürülən məlumatlarda olur. Axtarış sistemlərində və tərcümə sistemlərində orfoqrafiyanın korreksiyası da vacibdir. Kontekst təşkil edən cümlələrin ifadələri və mənası çox vacibdir. Çoxlu qrammatik və orfoqrafik səhvləri olan məzmunu oxumaq heç də xoş deyil.
+Araşdırmanın əsas səbəbi orfoqrafiya yoxlayıcı alqoritm hazırlamaqdır ki, öz bloqlarında, sosial şəbəkələrində Azərbaycan dilindən istifadə etməyə çalışan istifadəçilərin yazdıqları mətnlərin orfoqrafiyasına əmin olmaq imkanı yoxdur. Bu səbəbdən orfoqrafik səhvləri yoxlamaq üçün yeni alqoritm yaratmaq zərurəti yaranır.
+
+**SpAze** platforması Azərbaycan dilindən düzgün istifadənin formalaşdırılması üçündür. Kompüter və telefonlarımızda Azərbaycan klaviaturasının mövcud olmamağı və iki əlifba arasında daim dəyişiklik edərkən yaranan çaşqınlıq və ya orfoqrafiya qaylarını dərindən bilməmək yazıda səhvlər etməmizə gətirib çıxarır. Bu isə dilimizin zamanla modifikasiyalara uğramağına səbəb ola bilər. 
