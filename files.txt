@@ -1,0 +1,2 @@
+model/spell_model_weight_l.h5
+model/spelling_model_l.json
