@@ -20,6 +20,10 @@ import os, urllib
 from PIL import Image
 from model.attention import AttentionLayer
 
+icon = Image.open("static/logo.png")
+st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
+
+
 @st.cache
 def load_model():
   json_file = open("model/spelling_model_l.json", 'r')
@@ -31,8 +35,6 @@ def load_model():
 
 
 
-icon = Image.open("static/logo.png")
-st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
 
 model_loaded = load_model()
 Eindex2word, Mindex2word = pkl.load( open( "model/spell_word_index_l.pk", "rb" ) )
