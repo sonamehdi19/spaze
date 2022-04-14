@@ -15,23 +15,23 @@ from tensorflow.keras.preprocessing.text import one_hot, Tokenizer
 from tensorflow.keras.callbacks import EarlyStopping
 import pickle as pkl
 import numpy as np
-import os, urllib, cv2
+import os, urllib
 
 from PIL import Image
 
 
 from model.attention import AttentionLayer
 
-json_file = open("/Users/sonamehdizade/Desktop/App/model/spelling_model_l.json", 'r')
+json_file = open("model/spelling_model_l.json", 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 model_loaded = model_from_json(loaded_model_json, custom_objects={'AttentionLayer': AttentionLayer})
 # load weights into new model
-model_loaded.load_weights("/Users/sonamehdizade/Desktop/App/model/spell_model_weight_l.h5")
+model_loaded.load_weights("model/spell_model_weight_l.h5")
 
-Eindex2word, Mindex2word = pkl.load( open( "/Users/sonamehdizade/Desktop/App/model/spell_word_index_l.pk", "rb" ) )
+Eindex2word, Mindex2word = pkl.load( open( "model/spell_word_index_l.pk", "rb" ) )
 
-inputTokenizer, outputTokenizer = pkl.load( open( "/Users/sonamehdizade/Desktop/App/model/spell_tokenizers_l.pk", "rb" ) )
+inputTokenizer, outputTokenizer = pkl.load( open( "model/spell_tokenizers_l.pk", "rb" ) )
 Mword2index = outputTokenizer.word_index
 Eword2index = inputTokenizer.word_index
 
@@ -181,7 +181,7 @@ def get_file_content_as_string(path):
 
 
 
-icon = Image.open("/Users/sonamehdizade/Desktop/App/static/logo.png")
+icon = Image.open("static/logo.png")
 st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
 
 ban = Image.open("static/nlp.jpg")
@@ -277,7 +277,7 @@ if selected== "Ana səhifə":
   st.header("Niyə SpAze?")
   c1, mid, c2, mid2 = st.columns([5,4,20, 3])
   with c1:
-    st.image('static/advance_feature_img.png', width=300)
+    st.image('static/team.png', width=300)
   with c2:
     st.markdown(get_file_content_as_string("home1.md"), unsafe_allow_html=True)
 
