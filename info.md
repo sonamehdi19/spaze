@@ -1,7 +1,5 @@
 Təklif olunan model, hər bir səhv, düzgün cümlə cütünün simvol işarəsinə çevrildiyi və modelə qidalandığı ardıcıllıq modelinə xarakter əsaslı ardıcıllıqdır. Model 3 hissədən ibarətdir - Kodlayıcı, Dekoder və Diqqət mexanizmi. Təklif olunan modeldə həm kodlayıcı, həm də dekoder modeli embedding və LSTM qatlarından ibarətdir. Diqqət mexanizmi məlumatı Kodlayıcıdan Dekoderə daşıyan kontekst vektoru yaradır.
 
-Yerləşdirmə təbəqəsi üçün yerləşdirmə ölçüsü 500 və LSTM təbəqəsi üçün vahidlər 500-dür. Məlumatlar modelə 40 ölçülü partiyalar şəklində verilir. Diqqət üçün bathdanau diqqət mexanizmi istifadə olunur və o kodlayıcı və dekoderin xətti birləşməsindən istifadə etməklə əlavə diqqət qatı kimi çıxış edir. Optimizer üçün Adam və loss funksiyası üçün Sparse Categorical Cross entropy-dan istifadə olunur. 
-
 Təklif olunan model cəmi 3000 real dünyada səhv yazılmış sözlər üzərində təsdiqlənir və dəqiqlik proqnozlaşdırılan sözlərlə real sözlər arasında Levenshtein redaktə məsafəsinin yoxlanılması ilə ölçülür. Məsafə 0 o deməkdir ki, model sözü çox düzgün proqnozlaşdırıb. Məsafənin 0-dan böyük olması o deməkdir ki, model sözləri müəyyən dərəcədə düzgün, lakin müəyyən redaktə məsafəsi ilə proqnozlaşdırıb.
 
 Bu tədqiqatda Azərbaycan dilinin orfoqrafiyasının korreksiyasına diqqət mexanizmli kodlayıcı-dekoder modeli tətbiq edilmişdir. Öyrənmə və test dataları səhv və düzgün cümlə cütlərinin ardıcıllığından ibarətdir. Model real söz məlumatları üzərində sınaqdan keçirilir və ümumi nəticələr məsafə 0 üçün 75%, məsafə 1 üçün 90% və məsafə 2 üçün 96% təşkil edir.

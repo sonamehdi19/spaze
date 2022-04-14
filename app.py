@@ -189,6 +189,38 @@ ban = Image.open("static/nlp.jpg")
 lg= Image.open("static/spaze-logo.png")
 
 
+st.markdown(
+    """
+    <style>
+    ..menu .nav-item .nav-link.active {
+        background-color: #ffd04b;
+    }
+
+
+    p{
+    font-family: Roboto,sans-serif;
+    line-height: 1.929;
+    font-size: 18px;
+    margin-bottom: 0;
+    color: #888;}
+
+
+    .css-rncmk8 {
+    display: flex;
+    flex-wrap: wrap;
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    --fgp-gap: var(--fgp-gap-container);
+    margin-top: 50px;
+    margin-right: var(--fgp-gap);
+    --fgp-gap-container: calc(var(--fgp-gap-parent,0px) - 1rem) !important;
+    }
+
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 footer="""<style>
@@ -244,11 +276,22 @@ selected=option_menu(menu_title=None,
 if selected== "Ana səhifə":
   st.image(Image.open('static/main.png'),use_column_width=True)
   st.header("Niyə SpAze?")
-  st.markdown(get_file_content_as_string("ho.md"), unsafe_allow_html=True)
+  c1, mid, c2, mid2 = st.columns([5,4,20, 3])
+  with c1:
+    st.image('static/advance_feature_img.png', width=300)
+  with c2:
+    st.markdown(get_file_content_as_string("home1.md"), unsafe_allow_html=True)
+
+  c1, mid, c2, mid2 = st.columns([20,1,10, 2])
+  with c1:
+    st.markdown(get_file_content_as_string("ho2.md"), unsafe_allow_html=True)
+  with c2:
+    st.image('static/dayflow.png', width=350)
+
 
 elif selected=="Haqqında":
   st.image(Image.open('static/main.png'),use_column_width=True)
-  st.markdown(get_file_content_as_string("ins.md"), unsafe_allow_html=True)
+  st.markdown(get_file_content_as_string("info.md"), unsafe_allow_html=True)
 
 
 else:

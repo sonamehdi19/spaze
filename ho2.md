@@ -1,0 +1,2 @@
+
+**SpAze** platforması Azərbaycan dilindən düzgün istifadənin formalaşdırılması üçündür. Kompüter və telefonlarımızda Azərbaycan klaviaturasının mövcud olmamağı və iki əlifba arasında daim dəyişiklik edərkən yaranan çaşqınlıq və ya orfoqrafiya qaylarını dərindən bilməmək yazıda səhvlər etməmizə gətirib çıxarır. Bu isə dilimizin zamanla modifikasiyalara uğramağına səbəb ola bilər. 
