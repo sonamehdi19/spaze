@@ -20,6 +20,17 @@ import os, urllib
 from PIL import Image
 from model.attention import AttentionLayer
 
+@st.cache
+def load_model():
+  json_file = open("model/spelling_model_l.json", 'r')
+  loaded_model_json = json_file.read()
+  json_file.close()
+  model_loaded = model_from_json(loaded_model_json, custom_objects={'AttentionLayer': AttentionLayer})
+  # load weights into new model
+  model_loaded.load_weights("model/spell_model_weight_l.h5")
+
+
+
 icon = Image.open("static/logo.png")
 st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
 
@@ -154,14 +165,6 @@ def spell_check(w):
   return w
 
 
-@st.cache
-def load_model():
-  json_file = open("model/spelling_model_l.json", 'r')
-  loaded_model_json = json_file.read()
-  json_file.close()
-  model_loaded = model_from_json(loaded_model_json, custom_objects={'AttentionLayer': AttentionLayer})
-  # load weights into new model
-  model_loaded.load_weights("model/spell_model_weight_l.h5")
 
 
 st.markdown(
