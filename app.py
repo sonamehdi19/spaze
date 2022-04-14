@@ -22,6 +22,7 @@ from PIL import Image
 
 
 from model.attention import AttentionLayer
+
 json_file = open("/Users/sonamehdizade/Desktop/App/model/spelling_model_l.json", 'r')
 loaded_model_json = json_file.read()
 json_file.close()
@@ -207,6 +208,7 @@ background-color: transparent;
 text-decoration: underline;
 }
 
+
 .footer {
 position: fixed;
 left: 0;
@@ -250,9 +252,13 @@ elif selected=="Haqqında":
 
 
 else:
-  st.markdown('<h1 style="text-align: center;">SpAze - Azərbaycanca Orfoqrafiya Yoxlanış Platformu</h1>', unsafe_allow_html=True)
+  c1, mid, c2 = st.columns([1,1,20])
+  with c1:
+    st.image('static/logo.png', width=185)
+  with c2:
+    st.markdown('<h1 style="text-align: center;">SpAze - Azərbaycanca Orfoqrafiya Yoxlanış Platforması</h1>', unsafe_allow_html=True)
   col1, col2=st.columns(2);
-  text = col1.text_area(label ='İlkin mətn:',placeholder="Mətni buraya daxil edin...", value='', height=185, max_chars=None, key=None)
+  text = col1.text_area(label ='İlkin mətn:',placeholder="Mətni bura daxil edin...", value='', height=185, max_chars=None, key=None)
   
   if st.button('Yoxla'):
       if text == '':
