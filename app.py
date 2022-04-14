@@ -18,16 +18,25 @@ import numpy as np
 import os, urllib
 
 from PIL import Image
-
-
 from model.attention import AttentionLayer
 
-json_file = open("model/spelling_model_l.json", 'r')
-loaded_model_json = json_file.read()
-json_file.close()
-model_loaded = model_from_json(loaded_model_json, custom_objects={'AttentionLayer': AttentionLayer})
-# load weights into new model
-model_loaded.load_weights("model/spell_model_weight_l.h5")
+icon = Image.open("static/logo.png")
+st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
+
+@st.cache
+def load_model():
+  json_file = open("model/spelling_model_l.json", 'r')
+  loaded_model_json = json_file.read()
+  json_file.close()
+  model_loaded = model_from_json(loaded_model_json, custom_objects={'AttentionLayer': AttentionLayer})
+  # load weights into new model
+  model_loaded.load_weights("model/spell_model_weight_l.h5")
+  return model_loaded
+	  
+
+model_loaded = load_model()
+
+
 
 Eindex2word, Mindex2word = pkl.load( open( "model/spell_word_index_l.pk", "rb" ) )
 
@@ -161,13 +170,6 @@ def spell_check(w):
 
 
 
-
-
-
-icon = Image.open("static/logo.png")
-st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
-
-
 st.markdown(
     """
     <style>
@@ -195,6 +197,8 @@ st.markdown(
     --fgp-gap-container: calc(var(--fgp-gap-parent,0px) - 1rem) !important;
     }
 
+    element.style {
+    align-items: center;}
 
     </style>
     """,
@@ -221,7 +225,7 @@ text-decoration: underline;
 
 
 .footer {
-position: fixed;
+position:fixed;
 left: 0;
 bottom: 0;
 width: 100%;
