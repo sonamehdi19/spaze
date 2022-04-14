@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from flask import Flask, url_for,render_template, request, jsonify
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import string
