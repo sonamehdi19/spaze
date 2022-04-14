@@ -161,23 +161,6 @@ def spell_check(w):
 
 
 
-# Download a single file and make its content available as a string.
-@st.cache(show_spinner=False)
-def get_file_content_as_string(path):
-    """
-    Method to read markdown file
-
-    Inputs:
-        path : path to markdown file
-
-    Returns:
-        Returns the markdown file as string
-    """
-
-    file = open(path, mode='rb')
-    # response = urllib.request.urlopen(url)
-    return file.read().decode("utf-8")
-
 
 
 
@@ -276,18 +259,20 @@ if selected== "Ana səhifə":
   with c1:
     st.image('static/team.png', width=300)
   with c2:
-    st.markdown(get_file_content_as_string("home1.md"), unsafe_allow_html=True)
+    st.markdown("Orfoqrafik səhvlərin əksəriyyəti sosial mediada, söhbət proqramlarında və e-poçtlarda ötürülən məlumatlarda olur. Axtarış sistemlərində və tərcümə sistemlərində orfoqrafiyanın korreksiyası da vacibdir. Kontekst təşkil edən cümlələrin ifadələri və mənası çox vacibdir. Çoxlu qrammatik və orfoqrafik səhvləri olan məzmunu oxumaq heç də xoş deyil.Proyektin əsas məqsədi orfoqrafiya yoxlayıcı alqoritm hazırlamaqdır ki, öz bloqlarında, sosial şəbəkələrində Azərbaycan dilindən istifadə edən istifadəçilərin yazdıqları mətnləri təzədən vaxt sərf edib gözlə yoxlamadan orfoqrafiyasına əmin olsunlar.", unsafe_allow_html=True)
 
   c1, mid, c2, mid2 = st.columns([20,1,10, 2])
   with c1:
-    st.markdown(get_file_content_as_string("ho2.md"), unsafe_allow_html=True)
+    st.markdown("**SpAze** platforması Azərbaycan dilindən düzgün istifadənin formalaşdırılması üçündür. Kompüter və telefonlarımızda Azərbaycan klaviaturasının mövcud olmamağı və iki əlifba arasında daim dəyişiklik edərkən yaranan çaşqınlıq və ya orfoqrafiya qaylarını dərindən bilməmək yazıda səhvlər etməmizə gətirib çıxarır. Bu isə dilimizin zamanla modifikasiyalara uğramağına səbəb ola bilər. ", unsafe_allow_html=True)
   with c2:
     st.image('static/dayflow.png', width=350)
 
 
 elif selected=="Haqqında":
   st.image(Image.open('static/main.png'),use_column_width=True)
-  st.markdown(get_file_content_as_string("info.md"), unsafe_allow_html=True)
+  st.markdown("""Təklif olunan model, hər bir səhv, düzgün cümlə cütünün simvol işarəsinə çevrildiyi və modelə qidalandığı ardıcıllıq modelinə xarakter əsaslı ardıcıllıqdır. Model 3 hissədən ibarətdir - Kodlayıcı, Dekoder və Diqqət mexanizmi. Təklif olunan modeldə həm kodlayıcı, həm də dekoder modeli embedding və LSTM qatlarından ibarətdir. Diqqət mexanizmi məlumatı Kodlayıcıdan Dekoderə daşıyan kontekst vektoru yaradır.
+Təklif olunan model cəmi 3000 real dünyada səhv yazılmış sözlər üzərində təsdiqlənir və dəqiqlik proqnozlaşdırılan sözlərlə real sözlər arasında Levenshtein redaktə məsafəsinin yoxlanılması ilə ölçülür. Məsafə 0 o deməkdir ki, model sözü çox düzgün proqnozlaşdırıb. Məsafənin 0-dan böyük olması o deməkdir ki, model sözləri müəyyən dərəcədə düzgün, lakin müəyyən redaktə məsafəsi ilə proqnozlaşdırıb.
+Bu tədqiqatda Azərbaycan dilinin orfoqrafiyasının korreksiyasına diqqət mexanizmli kodlayıcı-dekoder modeli tətbiq edilmişdir. Öyrənmə və test dataları səhv və düzgün cümlə cütlərinin ardıcıllığından ibarətdir. Model real söz məlumatları üzərində sınaqdan keçirilir və ümumi nəticələr məsafə 0 üçün 75%, məsafə 1 üçün 90% və məsafə 2 üçün 96% təşkil edir.""", unsafe_allow_html=True)
 
 
 else:
