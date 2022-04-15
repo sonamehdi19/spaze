@@ -20,23 +20,14 @@ import os, urllib
 from PIL import Image
 from model.attention import AttentionLayer
 
-icon = Image.open("static/logo.png")
-st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
+json_file = open("model/spelling_model_l.json", 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+model_loaded = model_from_json(loaded_model_json, custom_objects={'AttentionLayer': AttentionLayer})
+# load weights into new model
+model_loaded.load_weights("model/spell_model_weight_l.h5")
 
 
-@st.cache
-def load_model():
-  json_file = open("model/spelling_model_l.json", 'r')
-  loaded_model_json = json_file.read()
-  json_file.close()
-  model_loaded = model_from_json(loaded_model_json, custom_objects={'AttentionLayer': AttentionLayer})
-  # load weights into new model
-  model_loaded.load_weights("model/spell_model_weight_l.h5")
-
-
-
-
-model_loaded = load_model()
 Eindex2word, Mindex2word = pkl.load( open( "model/spell_word_index_l.pk", "rb" ) )
 
 inputTokenizer, outputTokenizer = pkl.load( open( "model/spell_tokenizers_l.pk", "rb" ) )
@@ -167,15 +158,16 @@ def spell_check(w):
   return w
 
 
+icon = Image.open("static/logo.png")
+st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', layout='wide',  page_icon=icon)
 
 
 st.markdown(
     """
     <style>
-    ..menu .nav-item .nav-link.active {
+    .menu .nav-item .nav-link.active {
         background-color: #ffd04b;
     }
-
 
     p{
     font-family: Roboto,sans-serif;
@@ -187,6 +179,7 @@ st.markdown(
 
     .css-rncmk8 {
     display: flex;
+    align-items:center;
     flex-wrap: wrap;
     -webkit-box-flex: 1;
     flex-grow: 1;
@@ -195,9 +188,6 @@ st.markdown(
     margin-right: var(--fgp-gap);
     --fgp-gap-container: calc(var(--fgp-gap-parent,0px) - 1rem) !important;
     }
-
-    element.style {
-    align-items: center;}
 
     </style>
     """,
