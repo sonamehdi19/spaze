@@ -267,7 +267,7 @@ if selected== "Ana səhifə":
   with c1:
     st.image('static/team.png', width=300)
   with c2:
-    st.markdown("Orfoqrafik səhvlərin əksəriyyəti sosial mediada, söhbət proqramlarında və e-poçtlarda ötürülən məlumatlarda olur. Axtarış sistemlərində və tərcümə sistemlərində orfoqrafiyanın korreksiyası da vacibdir. Kontekst təşkil edən cümlələrin ifadələri və mənası çox vacibdir. Çoxlu qrammatik və orfoqrafik səhvləri olan məzmunu oxumaq heç də xoş deyil.Proyektin əsas məqsədi orfoqrafiya yoxlayıcı alqoritm hazırlamaqdır ki, öz bloqlarında, sosial şəbəkələrində Azərbaycan dilindən istifadə edən istifadəçilərin yazdıqları mətnləri təzədən vaxt sərf edib gözlə yoxlamadan orfoqrafiyasına əmin olsunlar.", unsafe_allow_html=True)
+    st.markdown("Orfoqrafik səhvlərin əksəriyyəti sosial mediada və e-poçtlarda ötürülən məlumatlarda olur. Axtarış sistemlərində və tərcümə sistemlərində orfoqrafiyanın korreksiyası da vacibdir. Kontekst təşkil edən cümlələrin ifadələri və mənası çox vacibdir. Çoxlu qrammatik və orfoqrafik səhvləri olan məzmunu oxumaq heç də xoş deyil.Proyektin əsas məqsədi orfoqrafiya yoxlayıcı alqoritm hazırlamaqdır ki, öz bloqlarında, sosial şəbəkələrində Azərbaycan dilindən istifadə edən istifadəçilərin yazdıqları mətnləri təzədən vaxt sərf edib gözlə yoxlamadan orfoqrafiyasına əmin olsunlar.", unsafe_allow_html=True)
 
   c1, mid, c2, mid2 = st.columns([20,1,10, 2])
   with c1:
