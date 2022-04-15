@@ -165,17 +165,29 @@ st.set_page_config(page_title='Azərbaycanca Orfoqrafiya Yoxlama Platforması', 
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
     .menu .nav-item .nav-link.active {
         background-color: #ffd04b;
     }
-
+    .nav-link.active .nav-link-horizontal
+    {
+    font-family: 'Poppins', sans-serif;
+    }
     p{
-    font-family: Roboto,sans-serif;
+    font-family: 'Poppins',sans-serif;
     line-height: 1.929;
     font-size: 18px;
     margin-bottom: 0;
     color: #888;}
-
+    h2 {
+    font-family: 'Poppins',sans-serif;
+    font-weight: 600;
+    color: rgb(49, 51, 63);
+    letter-spacing: -0.005em;
+    padding: 1rem 0px;
+    margin: 0px;
+    line-height: 1.4;}
 
     .css-rncmk8 {
     display: flex;
@@ -189,7 +201,8 @@ st.markdown(
     --fgp-gap-container: calc(var(--fgp-gap-parent,0px) - 1rem) !important;
     }
 
-    </style>
+  </style>
+
     """,
     unsafe_allow_html=True
 )
@@ -199,6 +212,8 @@ footer="""<style>
 
 #MainMenu{visibility:hidden;}
 footer{visibility:hidden;}
+
+
 
 a:link , a:visited{
 color: blue;
